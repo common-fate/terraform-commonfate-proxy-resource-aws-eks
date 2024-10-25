@@ -18,6 +18,8 @@ provider "kubernetes" {
 
 
 resource "kubernetes_cluster_role" "common_fate_readonly" {
+  count = var.create_default_rbac_roles ? 1 : 0
+
   metadata {
     name = "common-fate-readonly"
   }
@@ -37,6 +39,8 @@ resource "kubernetes_cluster_role" "common_fate_readonly" {
 
 
 resource "kubernetes_cluster_role" "common_fate_admin" {
+  count = var.create_default_rbac_roles ? 1 : 0
+
   metadata {
     name = "common-fate-admin"
   }
@@ -62,6 +66,8 @@ resource "kubernetes_cluster_role" "common_fate_admin" {
 
 
 resource "kubernetes_cluster_role_binding" "readonly_binding" {
+  count = var.create_default_rbac_roles ? 1 : 0
+
   metadata {
     name = "common-fate-readonly-binding"
   }
@@ -81,6 +87,8 @@ resource "kubernetes_cluster_role_binding" "readonly_binding" {
 
 
 resource "kubernetes_cluster_role_binding" "admin_binding" {
+  count = var.create_default_rbac_roles ? 1 : 0
+
   metadata {
     name = "common-fate-admin-binding"
   }

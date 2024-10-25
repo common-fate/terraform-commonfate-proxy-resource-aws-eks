@@ -37,30 +37,10 @@ variable "name" {
   default     = ""
 }
 
-variable "database" {
-  description = "The name of the database to connect to on the RDS instance."
-  type        = string
-}
-
-variable "users" {
-  description = "A list of database users and their credentials to access the database"
-  type = list(object({
-
-    name = string
-
-    username = string
-
-    password_secrets_manager_arn = string
-
-    endpoint = optional(string)
-
-  }))
-
-}
 
 
-variable "create_security_group_rule" {
-  description = "If 'true', will create a rule allowing ingress from the proxy to the database security group. The database security group is specified by the 'rds_security_group_id' variable."
+variable "create_default_rbac_roles" {
+  description = "If 'true', will create default admin and read_only k8s rbac roles that allow the default Common Fate impersonate user roles to access the cluster."
   type        = bool
-  default     = true
+  default     = false
 }
