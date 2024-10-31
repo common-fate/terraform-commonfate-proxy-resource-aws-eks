@@ -72,7 +72,7 @@ resource "aws_iam_policy" "eks_cluster_access" {
 
 resource "aws_iam_role_policy_attachment" "eks_access_attach" {
   role       = aws_iam_role.proxy_eks_cluster_access_role.name
-  policy_arn = aws_iam_policy.eks_describe_cluster.arn
+  policy_arn = aws_iam_policy.eks_cluster_access.arn
 }
 
 
@@ -143,8 +143,8 @@ resource "commonfate_proxy_eks_service_account" "readonly" {
 
 
 //make the default rbac roles for the cluster to allow for the service account access
-module "k8s_rbac" {
-  source                    = "./modules/k8s-rbac"
-  cluster_name              = var.cluster_name
-  create_default_rbac_roles = var.create_default_rbac_roles
-}
+# module "k8s_rbac" {
+#   source                    = "./modules/k8s-rbac"
+#   cluster_name              = var.cluster_name
+#   create_default_rbac_roles = var.create_default_rbac_roles
+# }
