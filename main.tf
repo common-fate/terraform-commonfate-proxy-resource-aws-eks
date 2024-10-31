@@ -42,7 +42,7 @@ resource "aws_iam_role" "proxy_eks_cluster_access_role" {
         Action = "sts:AssumeRole",
         Effect = "Allow",
         Principal = {
-          AWS = locals.aws_account_id
+          AWS = local.aws_account_id
         }
       }
     ]
@@ -128,7 +128,6 @@ resource "commonfate_proxy_eks_cluster" "cluster" {
   aws_account_id           = local.aws_account_id
   cluster_name             = var.name
   cluster_access_role_name = aws_iam_role.proxy_eks_cluster_access_role.name
-  users                    = var.users
 }
 
 resource "commonfate_proxy_eks_service_account" "admin" {
