@@ -126,7 +126,7 @@ resource "commonfate_proxy_eks_cluster" "cluster" {
   name                     = var.name == "" ? var.cluster_name : var.name
   region                   = local.aws_region
   aws_account_id           = local.aws_account_id
-  cluster_name             = var.name
+  cluster_name             = var.cluster_name
   cluster_access_role_name = aws_iam_role.proxy_eks_cluster_access_role.name
 }
 
