@@ -143,8 +143,8 @@ resource "commonfate_proxy_eks_service_account" "readonly" {
 
 
 //make the default rbac roles for the cluster to allow for the service account access
-# module "k8s_rbac" {
-#   source                    = "./modules/k8s-rbac"
-#   cluster_name              = var.cluster_name
-#   create_default_rbac_roles = var.create_default_rbac_roles
-# }
+module "k8s_rbac" {
+  source                    = "./modules/k8s-rbac"
+  cluster_name              = var.cluster_name
+  create_default_rbac_roles = var.create_default_rbac_roles
+}
