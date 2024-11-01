@@ -75,7 +75,7 @@ resource "kubernetes_cluster_role_binding" "readonly_binding" {
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "ClusterRole"
-    name      = kubernetes_cluster_role.common_fate_readonly.metadata.name
+    name      = kubernetes_cluster_role.common_fate_readonly[count.index].metadata[0].name
   }
 
   subject {
@@ -96,7 +96,7 @@ resource "kubernetes_cluster_role_binding" "admin_binding" {
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "ClusterRole"
-    name      = kubernetes_cluster_role.common_fate_admin.metadata.name
+    name      = kubernetes_cluster_role.common_fate_admin[count.index].metadata[0].name
   }
 
   subject {
