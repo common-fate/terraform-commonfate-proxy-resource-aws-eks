@@ -47,6 +47,9 @@ resource "aws_iam_role" "proxy_eks_cluster_access_role" {
       }
     ]
   })
+  tags = {
+    "common-fate-aws-proxy-access-role" = "true"
+  }
 }
 
 
