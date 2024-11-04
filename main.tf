@@ -27,13 +27,13 @@ data "commonfate_ecs_proxy" "proxy_data" {
 
 
 
-data "aws_eks_cluster" "eks-cluster" {
+data "aws_eks_cluster" "this" {
   name = var.cluster_name
 }
 
 
 resource "aws_iam_role" "proxy_eks_cluster_access_role" {
-  name        = "${var.namespace}-${var.stage}-integration-proxy-eks-cluster-access-role-role"
+  name        = "${var.namespace}-${var.stage}-integration-proxy-eks-cluster-access-role"
   description = "A role used by the proxy to access the eks cluster"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -65,9 +65,9 @@ resource "aws_iam_policy" "eks_cluster_access" {
       {
         Effect = "Allow",
         "Action" : [
-          "eks:*"
+          "eks:DescribeCluster"
         ],
-        "Resource" : data.aws_eks_cluster.eks-cluster.arn
+        "Resource" : data.aws_eks_cluster.this.arn
       }
     ]
   })
@@ -78,33 +78,6 @@ resource "aws_iam_role_policy_attachment" "eks_access_attach" {
   policy_arn = aws_iam_policy.eks_cluster_access.arn
 }
 
-
-//allow the proxy to assume the eks access role
-resource "aws_iam_policy" "proxy_assume_role" {
-  name        = "${var.namespace}-${var.stage}-proxy-assume-role"
-  description = "Allows access to eks role"
-
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Action" : ["sts:AssumeRole"],
-        "Resource" : "*"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "proxy_assume_role_attach" {
-  role       = data.commonfate_ecs_proxy.proxy_data.ecs_cluster_task_role_name
-  policy_arn = aws_iam_policy.proxy_assume_role.arn
-}
-
-
-# data "aws_iam_role" "proxy_task_role" {
-#   name = data.commonfate_ecs_proxy.proxy_data.ecs_cluster_task_role_name
-# }
 
 //create the access entry for the new role
 resource "aws_eks_access_entry" "proxy_access_entry" {
@@ -123,7 +96,6 @@ resource "aws_eks_access_policy_association" "policy_association" {
 }
 
 //create the CF resources
-
 resource "commonfate_proxy_eks_cluster" "cluster" {
   proxy_id                 = var.proxy_id
   name                     = var.name == "" ? var.cluster_name : var.name
@@ -133,19 +105,19 @@ resource "commonfate_proxy_eks_cluster" "cluster" {
   cluster_access_role_name = aws_iam_role.proxy_eks_cluster_access_role.name
 }
 
-resource "commonfate_proxy_eks_service_account" "admin" {
-  name                 = "Admin"
-  service_account_name = "common-fate-admin"
-}
-resource "commonfate_proxy_eks_service_account" "readonly" {
-  name                 = "Read Only"
-  service_account_name = "common-fate-readonly"
-}
 
-
-
-
-//make the default rbac roles for the cluster to allow for the service account access
+// optionally create the service accounts common-fate-admin and common-fate-read-only for access to the cluster
+// these roles are a starting point for access and can be used as a template to deploy your own restricted roles
+// the service accounts should be created in Common Fate seperately using the following example:
+// resource "proxy_eks_service_account" "eks_read_only" {
+//   name                 = "Read Only"
+//   service_account_name = "common-fate-readonly"
+// }
+//
+// resource "proxy_eks_service_account" "eks_admin" {
+//   name                 = "Admin"
+//   service_account_name = "common-fate-admin"
+// }
 module "k8s_rbac" {
   source                    = "./modules/k8s-rbac"
   cluster_name              = var.cluster_name
