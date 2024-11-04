@@ -1,6 +1,6 @@
 {
   "name": "@common-fate/terraform-commonfate-proxy-resource-aws-eks",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "keywords": [],
