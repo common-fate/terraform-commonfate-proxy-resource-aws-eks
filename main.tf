@@ -8,6 +8,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.0"
+    }
   }
 }
 # data "aws_region" "current" {}
@@ -119,7 +123,5 @@ terraform {
 //   service_account_name = "common-fate-admin"
 // }
 module "k8s_rbac" {
-  source                    = "./modules/k8s-rbac"
-  cluster_name              = var.cluster_name
-  create_default_rbac_roles = var.create_default_rbac_roles
+  source = "./modules/k8s-rbac"
 }
